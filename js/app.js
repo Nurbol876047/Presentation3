@@ -87,6 +87,33 @@
   document.getElementById('zoneLeft').addEventListener('click', prev);
   document.getElementById('zoneRight').addEventListener('click', next);
 
+  // fullscreen toggle
+  const fsBtn = document.getElementById('fsBtn');
+  const fsExpand = fsBtn.querySelector('.fs-icon-expand');
+  const fsShrink = fsBtn.querySelector('.fs-icon-shrink');
+
+  function updateFsIcon() {
+    const isFs = !!document.fullscreenElement;
+    fsExpand.hidden = isFs;
+    fsShrink.hidden = !isFs;
+    fsBtn.setAttribute('aria-label', isFs ? 'Толық экраннан шығу' : 'Толық экран');
+    fsBtn.title = isFs ? 'Толық экраннан шығу' : 'Толық экран';
+  }
+
+  fsBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+
+  document.addEventListener('fullscreenchange', updateFsIcon);
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'f' || e.key === 'F') fsBtn.click();
+  });
+
   window.addEventListener('keydown', (e) => {
     if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); next(); }
     else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
